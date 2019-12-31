@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a href="{% url 'plan_create'%}">Create New</a>
+    {% if plans %}
+            <ul>
+            {% for m in plans %}
+                <li><a href="{% url 'plan_detail' m.id %}">{{ m.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No plans are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>

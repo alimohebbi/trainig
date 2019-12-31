@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if workout %}
+        <h3>  {{ workout.name }}</h3>
+        <p>{{ workout.workout_list }}</p>
+        <p>Number : {{ workout.number }}</p>
+        <ul>
+            {% for exercise in workout.exercise_list.all %}
+                <li><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise }}</a> </li>
+
+            {% endfor %}
+        </ul>
+        <p>Publish Date: {{ workout.pub_date }}</p>
+
+
+        <a href="{% url 'workout_update' workout.id %}">edit</a>
+        <a href="{% url 'workout_delete' workout.id %}">delete</a>
+        <a href="{{ request.META.HTTP_REFERER }}">Go back</a>
+    {% else %}
+        <p>No muscle are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>

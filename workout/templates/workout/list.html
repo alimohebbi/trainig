@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <a href="{% url 'workout_create'%}">Create New</a>
+    {% if workouts %}
+            <ul>
+            {% for m in workouts %}
+                <li><a href="{% url 'workout_detail' m.id %}">{{ m.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No workouts are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>

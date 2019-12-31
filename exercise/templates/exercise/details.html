@@ -11,7 +11,7 @@
 
         <a href="{% url 'exercise_update' exercise.id %}">edit</a>
         <a href="{% url 'exercise_delete' exercise.id %}">delete</a>
-        <a href="{% url 'exercise_list' %}">back</a>
+        <a href="{{ request.META.HTTP_REFERER }}">Go back</a>
     {% else %}
         <p>No muscle are available.</p>
     {% endif %}
