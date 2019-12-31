@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if muscles %}
+        <ul>
+            {% for m in muscles %}
+                <li><a href="{% url 'muscle_detail' m.id %}">{{ m.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No polls are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>

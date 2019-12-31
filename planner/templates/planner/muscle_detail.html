@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if muscle %}
+        <h3>  {{ muscle.name }}</h3>
+        <p>{{ muscle.id }}</p>
+
+        <a href="{% url 'muscle_edit' muscle.id %}">edit</a>
+    {% else %}
+        <p>No muscle are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>
