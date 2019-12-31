@@ -6,7 +6,7 @@
         <h3>  {{ muscle.name }}</h3>
         <p>{{ muscle.id }}</p>
 
-        <a href="{% url 'muscle_edit' muscle.id %}">edit</a>
+        <a href="{% url 'muscle_update' muscle.id %}">edit</a>
     {% else %}
         <p>No muscle are available.</p>
     {% endif %}

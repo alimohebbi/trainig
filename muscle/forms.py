@@ -1,9 +1,9 @@
 from django import forms
 
-from planner.models import Muscle
+from muscle.models import Muscle
 
 
 class MuscleForm(forms.ModelForm):
     class Meta:
         model = Muscle
-        fields = ['name']
+        fields = '__all__'
