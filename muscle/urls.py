@@ -8,5 +8,4 @@ urlpatterns = [
     path('create/', views.MuscleCreate.as_view(), name='muscle_create'),
     path('<int:pk>/', views.MuscleView.as_view(), name='muscle_detail'),
     path('list/', views.MuscleListView.as_view(), name='muscle_list'),
-
 ]

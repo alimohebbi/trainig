@@ -8,7 +8,7 @@ from muscle.models import Muscle
 
 
 class MuscleListView(generic.ListView):
-    template_name = 'muscle/muscle_list.html'
+    template_name = 'muscle/list.html'
     context_object_name = 'muscles'
 
     def get_queryset(self):
@@ -18,12 +18,13 @@ class MuscleListView(generic.ListView):
 
 class MuscleView(generic.DetailView):
     model = Muscle
-    template_name = 'muscle/muscle_details.html'
+    template_name = 'muscle/details.html'
 
 
 class MuscleCreate(CreateView):
     model = Muscle
     form_class = MuscleForm
+    template_name = 'muscle/form.html'
     success_url = reverse_lazy('muscle_list')
 
 
@@ -35,8 +36,8 @@ class MuscleUpdate(UpdateView):
 
 class MuscleDelete(DeleteView):
     model = Muscle
-    context_object_name = 'muscle'
-    template_name = 'muscle/muscle_delete.html'
+    context_object_name = 'exercise'
+    template_name = 'muscle/delete.html'
     success_url = reverse_lazy('muscle_list')
 
 

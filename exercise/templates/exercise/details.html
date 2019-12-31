@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if exercise %}
+        <h3>  {{ exercise.name }}</h3>
+        <p>{{ exercise.primary_muscle }}</p>
+        <p>{{ exercise.secondary_muscle }}</p>
+        <p>{{ exercise.comment }}</p>
+        <p>{{ exercise.tutorial_link }}</p>
+
+        <a href="{% url 'exercise_update' exercise.id %}">edit</a>
+        <a href="{% url 'exercise_delete' exercise.id %}">delete</a>
+        <a href="{% url 'exercise_list' %}">back</a>
+    {% else %}
+        <p>No muscle are available.</p>
+    {% endif %}
+</head>
+<body>
+
+</body>
+</html>
