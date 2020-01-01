@@ -1,28 +1,41 @@
 from django import forms
-from django.forms import inlineformset_factory
+from djangoformsetjs.utils import formset_media_js
 
 from exercise.models import Exercise
 from muscle.models import Muscle
-from workout.models import Workout
+from workout.models import Workout, WorkoutMembership
 
 
-class WorkoutForm(forms.ModelForm):
-    muscle = forms.ModelChoiceField(queryset=Muscle.objects.all())
-    exercise_list = inlineformset_factory(Exercise, Workout, fields=('name',))
+class WorkoutExerciseForm(forms.ModelForm):
+    muscle = forms.ModelChoiceField(queryset=Muscle.objects.all(),
+                                    widget=forms.Select(attrs={'class': 'muscle_select', }))
 
     class Meta:
-        model = Workout
-        fields = ['name', 'muscle', 'number', 'pub_date']
-        # fields = '__all__'
+        model = WorkoutMembership
+        fields = ['muscle', 'exercise', 'number']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['exercise_list'].queryset = Exercise.objects.none()
-        if 'muscle' in self.data:
+        print(hasattr(self, 'cleaned_data'))
+        if hasattr(self, 'cleaned_data'):
             try:
-                muscle = int(self.data.get('muscle'))
-                self.fields['exercise_list'].queryset = Exercise.objects.filter(primary_muscle=muscle).order_by('name')
+                if 'muscle' in self.cleaned_data.keys():
+                    muscle = self.cleaned_data['muscle']
+                    self.fields['exercise'].queryset = Exercise.objects.filter(primary_muscle=muscle).order_by('name')
             except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
+                pass
         elif self.instance.pk:
-            self.fields['exercise_list'].queryset = self.instance.exercise_list.order_by('name')
+            self.fields['exercise'].queryset = Exercise.objects.all()
+            # self.fields['exercise'].queryset = Exercise.objects.filter(
+            #     primary_muscle=self.instance.exercise.primary_muscle).order_by('name')
+            self.fields['muscle'].initial = self.instance.exercise.primary_muscle
+
+
+class WorkoutForm(forms.ModelForm):
+    class Meta:
+        model = Workout
+        fields = ['name', 'number', 'pub_date']
+
+    class Media(object):
+        js = formset_media_js
+        # fields = '__all__'

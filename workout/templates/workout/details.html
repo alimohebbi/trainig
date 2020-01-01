@@ -7,8 +7,9 @@
         <p>{{ workout.workout_list }}</p>
         <p>Number : {{ workout.number }}</p>
         <ul>
-            {% for exercise in workout.exercise_list.all %}
-                <li><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise }}</a> </li>
+{#            {% for exercise in workout.exercise_list.all %}#}
+            {% for exercise in exercises %}
+                <li><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }} </a> </li>
 
             {% endfor %}
         </ul>

@@ -43,6 +43,11 @@ INSTALLED_APPS = [
     'plan',
 ]
 
+INSTALLED_APPS += (
+    'jquery',
+    'djangoformsetjs',
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

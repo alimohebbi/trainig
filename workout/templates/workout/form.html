@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    {{ form.media }}
 
+    <script type="text/javascript">
+        $(function () {
+            $(".inline.{{ ingredient_form.prefix }}").formset({
+                prefix: "{{ ingredient_form.prefix }}",
+            })
+        })
+    </script>
 </head>
 <body>
 <meta charset="UTF-8">
@@ -11,22 +20,40 @@
     <table>
         {{ form.as_table }}
     </table>
+
+    <fieldset>
+        <legend>Exercises</legend>
+        {{ ingredient_form.management_form }}
+        {{ ingredient_form.non_form_errors }}
+        {% for exform in ingredient_form %}
+
+            <div class="inline {{ ingredient_form.prefix }}">
+                {{ exform.errors }}
+                {{ exform.label_tag }}
+                {{ exform }}
+            </div>
+        {% endfor %}
+    </fieldset>
     <button type="submit">Save</button>
 </form>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-    $("#id_muscle").change(function () {
+    $(".muscle_select").change(function () {
         var url = $("#WorkoutForm").attr("data-exercise-url");  // get the url of the `load_cities` view
-        var muscleId = $(this).val();  // get the selected country ID from the HTML input
-        console.log(muscleId)
+        var muscleId = $(this).val(); // get the selected country ID from the HTML input
+        var element_id = $(this).attr("id");
+        element_id = element_id.substring(
+            element_id.indexOf("-") + 1,
+            element_id.lastIndexOf("-")
+        );
+        var exercise_id = "#id_workoutmembership_set-" + element_id + "-exercise"
         $.ajax({                       // initialize an AJAX request
             url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
             data: {
                 'muscle': muscleId       // add the country id to the GET parameters
             },
             success: function (data) {   // `data` is the return of the `load_cities` view function
-                $("#id_exercise_list").html(data);  // replace the contents of the city input with the data that came from the server
+                $(exercise_id).html(data);  // replace the contents of the city input with the data that came from the server
             }
         });
 
