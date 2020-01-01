@@ -1,15 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <h2>New Workout</h2>
-    <form method="POST">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
 
 </head>
 <body>
+<meta charset="UTF-8">
+<h2>New Workout</h2>
+<form method="post" id="WorkoutForm" data-exercise-url="{% url 'ajax_load_exercises' %}" novalidate>
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Save</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_muscle").change(function () {
+        var url = $("#WorkoutForm").attr("data-exercise-url");  // get the url of the `load_cities` view
+        var muscleId = $(this).val();  // get the selected country ID from the HTML input
+        console.log(muscleId)
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+            data: {
+                'muscle': muscleId       // add the country id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_cities` view function
+                $("#id_exercise_list").html(data);  // replace the contents of the city input with the data that came from the server
+            }
+        });
+
+    });
+</script>
+
 
 </body>
 </html>

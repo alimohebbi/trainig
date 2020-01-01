@@ -30,6 +30,7 @@ class MuscleCreate(CreateView):
 
 class MuscleUpdate(UpdateView):
     model = Muscle
+    template_name = 'muscle/form.html'
     form_class = MuscleForm
     success_url = reverse_lazy('muscle_list')
 
