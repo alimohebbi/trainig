@@ -1,15 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends "base.html" %}
+{% block content %}
+    {{ form.media }}
+    {% load crispy_forms_tags %}
+
     <h2>New Plan</h2>
-    <form method="POST">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
+    <form method="post" id="PlanForm" data-workout-url="{% url 'ajax_load_workouts' %}" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <table>
+                {{ form|crispy }}
+            </table>
+        </div>
+
+        <fieldset>
+            <legend>Workouts</legend>
+            {{ ingredient_form.management_form }}
+            {{ ingredient_form.non_form_errors }}
+            {% for exform in ingredient_form %}
+
+                <div class="inline {{ ingredient_form.prefix }}">
+                    {{ exform.errors }}
+                    {{ exform.label_tag }}
+                    <div class="row">
+                        {{ exform.id }}
+                        <div class="col-3">
+                            {{ exform.search|as_crispy_field }}
+                        </div>
+                         <div class="col-3">
+                            {{ exform.workout|as_crispy_field }}
+                        </div>
+                        <div class="col-3">
+                            {{ exform.number|as_crispy_field }}
+                        </div>
+
+
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+        <button class="btn btn-primary" type="submit">Save</button>
     </form>
+    <script type="text/javascript">
+        $(function () {
+            $(".inline.{{ ingredient_form.prefix }}").formset({
+                prefix: "{{ ingredient_form.prefix }}",
+            })
+        })
+    </script>
+    <script>
+        $(".workout_search").change(function () {
+            var url = $("#PlanForm").attr("data-workout-url");  // get the url of the `load_cities` view
+            var search = $(this).val(); // get the selected country ID from the HTML input
+            var element_id = $(this).attr("id");
+            element_id = element_id.substring(
+                element_id.indexOf("-") + 1,
+                element_id.lastIndexOf("-")
+            );
+            var workout_id = "#id_planmembership_set-" + element_id + "-workout"
+            $.ajax({                       // initialize an AJAX request
+                url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'search': search       // add the country id to the GET parameters
+                },
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $(workout_id).html(data);  // replace the contents of the city input with the data that came from the server
+                }
+            });
 
-</head>
-<body>
+        });
+    </script>
 
-</body>
-</html>
+{% endblock %}

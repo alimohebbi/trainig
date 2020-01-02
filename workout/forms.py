@@ -16,7 +16,6 @@ class WorkoutExerciseForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print(hasattr(self, 'cleaned_data'))
         if hasattr(self, 'cleaned_data'):
             try:
                 if 'muscle' in self.cleaned_data.keys():
@@ -38,4 +37,3 @@ class WorkoutForm(forms.ModelForm):
 
     class Media(object):
         js = formset_media_js
-        # fields = '__all__'

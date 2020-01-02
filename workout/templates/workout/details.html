@@ -1,29 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
+
+{% extends "base.html" %}
+{% block content %}
     {% if workout %}
-        <h3>  {{ workout.name }}</h3>
-        <p>{{ workout.workout_list }}</p>
-        <p>Number : {{ workout.number }}</p>
-        <ul>
-{#            {% for exercise in workout.exercise_list.all %}#}
-            {% for exercise in exercises %}
-                <li><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }} </a> </li>
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                {{ workout.name }}
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for exercise in exercises  %}
+                    <li class="list-group-item"><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></li>
+                {% endfor %}
 
-            {% endfor %}
-        </ul>
-        <p>Publish Date: {{ workout.pub_date }}</p>
+            </ul>
+        </div>
+        <div class="row p-3">
+            <span class=" btn badge badge-info">Publish Date: {{ workout.pub_date }}</span>
+        </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <a class="btn btn-secondary active" href="{% url 'workout_update' workout.id %}">edit</a>
+            <a class="btn btn-secondary active" href="{% url 'workout_delete' workout.id %}">delete</a>
+        </div>
 
-
-        <a href="{% url 'workout_update' workout.id %}">edit</a>
-        <a href="{% url 'workout_delete' workout.id %}">delete</a>
-        <a href="{{ request.META.HTTP_REFERER }}">Go back</a>
     {% else %}
-        <p>No muscle are available.</p>
+        <p>No Plans are available.</p>
     {% endif %}
-</head>
-<body>
 
-</body>
-</html>
+{% endblock %}

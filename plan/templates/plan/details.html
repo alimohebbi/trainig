@@ -1,28 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends "base.html" %}
+{% block content %}
     {% if plan %}
-        <h3>  {{ plan.name }}</h3>
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                {{ plan.name }}
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for workout in workouts %}
+                    <li class="list-group-item"><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></li>
+                {% endfor %}
 
-        <p>Number : {{ plan.number }}</p>
-        <ul>
-            {% for workout in plan.workout_list.all %}
-                <li><a href="{% url 'workout_detail' workout.id %}">{{ workout }}</a> </li>
+            </ul>
+        </div>
+        <div class="row p-3">
+            <span class=" btn badge badge-info">Publish Date: {{ plan.pub_date }}</span>
+        </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <a class="btn btn-secondary active" href="{% url 'plan_update' plan.id %}">edit</a>
+            <a class="btn btn-secondary active" href="{% url 'plan_delete' plan.id %}">delete</a>
+        </div>
 
-            {% endfor %}
-        </ul>
-        <p>Publish Date: {{ plan.pub_date }}</p>
-
-
-        <a href="{% url 'plan_update' plan.id %}">edit</a>
-        <a href="{% url 'plan_delete' plan.id %}">delete</a>
-        <a href="{{ request.META.HTTP_REFERER }}">Go back</a>
     {% else %}
-        <p>No muscle are available.</p>
+        <p>No Plans are available.</p>
     {% endif %}
-</head>
-<body>
 
-</body>
-</html>
+{% endblock %}

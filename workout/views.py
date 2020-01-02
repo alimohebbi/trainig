@@ -17,7 +17,6 @@ class WorkoutListView(generic.ListView):
     context_object_name = 'workouts'
 
     def get_queryset(self):
-        """Return the last five published questions."""
         return Workout.objects.order_by('-pub_date')
 
 
@@ -27,7 +26,7 @@ class WorkoutView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(WorkoutView, self).get_context_data(**kwargs)
-        exercise_ids= WorkoutMembership.objects.filter(workout__pk=self.object.id) \
+        exercise_ids = WorkoutMembership.objects.filter(workout__pk=self.object.id) \
             .order_by('number') \
             .values_list('exercise', flat=True)
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(exercise_ids)])
@@ -40,23 +39,28 @@ class WorkoutCreate(CreateView):
     template_name = 'workout/form.html'
     form_class = WorkoutForm
     success_url = reverse_lazy('workout_list')
+    inline_fields = ['muscle', 'exercise', 'number']
 
     def get(self, request, *args, **kwargs):
         self.object = None
         form = WorkoutForm
-        fields = ['muscle', 'exercise', 'number']
-        ingredient_form = inlineformset_factory(Workout, Workout.exercise_list.through, fields=fields, extra=2,
+        ingredient_form = inlineformset_factory(Workout, Workout.exercise_list.through, fields=self.inline_fields,
+                                                extra=2,
                                                 form=WorkoutExerciseForm)
         return self.render_to_response(self.get_context_data(form=form, ingredient_form=ingredient_form))
 
     def post(self, request, *args, **kwargs):
         self.object = None
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        fields = ['muscle', 'exercise', 'number']
-        ingredient_form_class = inlineformset_factory(Workout, Workout.exercise_list.through, fields=fields, extra=2,
+        ingredient_form_class = inlineformset_factory(Workout, Workout.exercise_list.through, fields=self.inline_fields,
+                                                      extra=2,
                                                       form=WorkoutExerciseForm)
         ingredient_form = ingredient_form_class(self.request.POST)
+
+        return self.evaluate_forms(ingredient_form)
+
+    def evaluate_forms(self, ingredient_form):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
         if form.is_valid() and ingredient_form.is_valid():
             return self.form_valid(form, ingredient_form)
         else:
@@ -79,33 +83,18 @@ class WorkoutUpdate(UpdateView, WorkoutCreate):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = WorkoutForm(instance=self.object)
-        fields = ['muscle', 'exercise', 'number']
-        ingredient_form = inlineformset_factory(Workout, Workout.exercise_list.through, fields=fields, extra=2,
-                                                form=WorkoutExerciseForm)
+        ingredient_form = inlineformset_factory(Workout, Workout.exercise_list.through, fields=self.inline_fields,
+                                                extra=2, form=WorkoutExerciseForm)
         return self.render_to_response(
             self.get_context_data(form=form, ingredient_form=ingredient_form(instance=self.object)))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        fields = ['muscle', 'exercise', 'number']
-        ingredient_form_class = inlineformset_factory(Workout, Workout.exercise_list.through, fields=fields, extra=2,
-                                                      form=WorkoutExerciseForm)
+        ingredient_form_class = inlineformset_factory(Workout, Workout.exercise_list.through, fields=self.inline_fields,
+                                                      extra=2, form=WorkoutExerciseForm)
         ingredient_form = ingredient_form_class(self.request.POST, instance=self.object)
-        if form.is_valid() and ingredient_form.is_valid():
-            return self.form_valid(form, ingredient_form)
-        else:
-            return self.form_invalid(form, ingredient_form)
+        return self.evaluate_forms(ingredient_form)
 
-
-#
-# class WorkoutUpdate(UpdateView):
-#     model = Workout
-#     template_name = 'workout/form.html'
-#     form_class = WorkoutForm
-#     success_url = reverse_lazy('workout_list')
-#
 
 class WorkoutDelete(DeleteView):
     model = Workout
@@ -116,7 +105,5 @@ class WorkoutDelete(DeleteView):
 
 def load_exercises(request):
     muscle = request.GET.get('muscle')
-    print(muscle)
     exercises = Exercise.objects.filter(primary_muscle=muscle).order_by('name')
-    print(exercises)
-    return render(request, 'workout/exercise_dropdown_list_options.html', {'exercises': exercises})
+    return render(request, 'exercise_dropdown_list_options.html', {'elements': exercises})
