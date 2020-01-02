@@ -1,8 +1,47 @@
-{% extends "base.html" %}
-   {% block head %}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    {{ form.media }}
 
+{% extends "base.html" %}
+{% block content %}
+    {{ form.media }}
+    {% load crispy_forms_tags %}
+
+    <h2>New Plan</h2>
+    <form method="post" id="WorkoutForm" data-exercise-url="{% url 'ajax_load_exercises' %}" novalidate>
+        {% csrf_token %}
+        <div class="form-group">
+            <table>
+                {{ form|crispy }}
+            </table>
+        </div>
+
+        <fieldset>
+            <legend>Workouts</legend>
+            {{ ingredient_form.management_form }}
+            {{ ingredient_form.non_form_errors }}
+            {% for exform in ingredient_form %}
+
+                <div class="inline {{ ingredient_form.prefix }}">
+                    {{ exform.errors }}
+                    {{ exform.label_tag }}
+                    <div class="row">
+                        {{ exform.id }}
+                        <div class="col-3">
+                            {{ exform.muscle|as_crispy_field }}
+                        </div>
+                         <div class="col-3">
+                            {{ exform.exercise|as_crispy_field}}
+                        </div>
+                            <div class="col-2">
+                            {{ exform.number|as_crispy_field }}
+                        </div>
+                        <div class="col-1">
+                            {{ exform.DELETE|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+        <button class="btn btn-primary" type="submit">Save</button>
+    </form>
     <script type="text/javascript">
         $(function () {
             $(".inline.{{ ingredient_form.prefix }}").formset({
@@ -10,31 +49,6 @@
             })
         })
     </script>
-   {% endblock %}
-
-{% block content %}
-<h2>New Workout</h2>
-<form method="post" id="WorkoutForm" data-exercise-url="{% url 'ajax_load_exercises' %}" novalidate>
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-
-    <fieldset>
-        <legend>Exercises</legend>
-        {{ ingredient_form.management_form }}
-        {{ ingredient_form.non_form_errors }}
-        {% for exform in ingredient_form %}
-
-            <div class="inline {{ ingredient_form.prefix }}">
-                {{ exform.errors }}
-                {{ exform.label_tag }}
-                {{ exform }}
-            </div>
-        {% endfor %}
-    </fieldset>
-    <button type="submit">Save</button>
-</form>
 
 <script>
     $(".muscle_select").change(function () {
@@ -60,4 +74,3 @@
 </script>
 
 {% endblock %}
-

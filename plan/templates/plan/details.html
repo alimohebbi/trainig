@@ -9,7 +9,6 @@
                 {% for workout in workouts %}
                     <li class="list-group-item"><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></li>
                 {% endfor %}
-
             </ul>
         </div>
         <div class="row p-3">

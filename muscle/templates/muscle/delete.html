@@ -1,6 +1,9 @@
-<h1>Muscle Delete?</h1>
-<form  method="post">
-{% csrf_token %}
-Are you sure you want to delete "{{muscle}}" muscle?
-<input  type="submit"  value="Submit"  />
-</form>
+{% extends "base.html" %}
+{% block content %}
+    <h1>Muscle Delete?</h1>
+    <form method="post">
+        {% csrf_token %}
+        Are you sure you want to delete "{{ muscle }}" muscle?
+        <input type="submit" value="Submit"/>
+    </form>
+{% endblock %}

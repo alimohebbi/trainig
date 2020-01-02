@@ -1,19 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+
+
+{% extends "base.html" %}
+{% block content %}
     <meta charset="UTF-8">
-    <a href="{% url 'exercise_create'%}">Create New</a>
+    <div class="container-sm">
+        <div class="row p-2">
+            <a type="button" class="btn btn-outline-primary" href="{% url 'exercise_create' %}">Create New</a>
+        </div>
+    </div>
     {% if exercises %}
         <ul>
-            {% for m in exercises %}
-                <li><a href="{% url 'exercise_detail' m.id %}">{{ m.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No exercise are available.</p>
-    {% endif %}
-</head>
-<body>
+            <div class="row">
+                {% for m in exercises %}
+                    <div class="card m-2 col-3" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ m.name }}</h5>
+                            <p class="card-text">Publish Date: {{ m.pub_date }}</p>
+                            <a href="{% url 'exercise_detail' m.id %}" class="card-link">Detail</a>
+                        </div>
+                    </div>
 
-</body>
-</html>
+                {% endfor %}
+            </div>
+        </ul>
+
+    {% else %}
+        <p>No Muscle are available.</p>
+    {% endif %}
+{% endblock %}

@@ -37,7 +37,7 @@ class MuscleUpdate(UpdateView):
 
 class MuscleDelete(DeleteView):
     model = Muscle
-    context_object_name = 'exercise'
+    context_object_name = 'muscle'
     template_name = 'muscle/delete.html'
     success_url = reverse_lazy('muscle_list')
 

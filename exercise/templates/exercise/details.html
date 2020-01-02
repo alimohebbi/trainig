@@ -1,22 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+
+
+
+{% extends "base.html" %}
+{% block content %}
     {% if exercise %}
-        <h3>  {{ exercise.name }}</h3>
-        <p>{{ exercise.primary_muscle }}</p>
-        <p>{{ exercise.secondary_muscle }}</p>
-        <p>{{ exercise.comment }}</p>
-        <p>{{ exercise.tutorial_link }}</p>
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                {{ exercise.name }}
+            </div>
 
-        <a href="{% url 'exercise_update' exercise.id %}">edit</a>
-        <a href="{% url 'exercise_delete' exercise.id %}">delete</a>
-        <a href="{{ request.META.HTTP_REFERER }}">Go back</a>
+            <ul class="list-group list-group-flush">
+
+                <li class="list-group-item"> Primary Muscle: {{ exercise.primary_muscle }}</li>
+                <li class="list-group-item"> Secondary Muscle: {{ exercise.secondary_muscle }}</li>
+                <li class="list-group-item"> Comment: {{ exercise.comment }}</li>
+                <li class="list-group-item"><a href="{{ exercise.tutorial_link }}">Tutorial Link</a></li>
+            </ul>
+
+        </div>
+        <div class="row p-3">
+            <span class=" btn badge badge-info">Publish Date: {{ exercise.pub_date }}</span>
+        </div>
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <a class="btn btn-secondary active" href="{% url 'exercise_update' exercise.id %}">edit</a>
+            <a class="btn btn-secondary active" href="{% url 'exercise_delete' exercise.id %}">delete</a>
+        </div>
+
     {% else %}
-        <p>No muscle are available.</p>
+        <p>No Plans are available.</p>
     {% endif %}
-</head>
-<body>
 
-</body>
-</html>
+{% endblock %}
