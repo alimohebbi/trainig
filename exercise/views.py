@@ -9,10 +9,7 @@ from exercise.models import Exercise
 class ExerciseListView(generic.ListView):
     template_name = 'exercise/list.html'
     context_object_name = 'exercises'
-
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Exercise.objects.order_by('-pub_date')
+    model = Exercise
 
 
 class ExerciseView(generic.DetailView):
@@ -39,5 +36,3 @@ class ExerciseDelete(DeleteView):
     context_object_name = 'exercise'
     template_name = 'exercise/delete.html'
     success_url = reverse_lazy('exercise_list')
-
-

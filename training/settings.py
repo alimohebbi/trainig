@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'exercise',
     'workout',
     'plan',
+    'record'
 ]
 
 INSTALLED_APPS += (

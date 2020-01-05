@@ -15,7 +15,8 @@
             </ul>
         </div>
         <div class="row p-3">
-            <span class=" btn badge badge-info">Publish Date: {{ workout.pub_date }}</span>
+            <span class=" btn badge badge-info   ">Publish Date: {{ workout.pub_date }}</span>
+            <span class=" btn badge badge-primary ml-1">Trial: {{ workout.number }}</span>
         </div>
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <a class="btn btn-secondary active" href="{% url 'workout_update' workout.id %}">edit</a>

@@ -1,26 +1,69 @@
 {% extends "base.html" %}
 {% block content %}
+
+    <h3 class="m-2">Plan: {{ plan.name }}</h3>
+    <div class="btn-group btn-group-toggle m-2" data-toggle="buttons">
+        <a class="btn btn-secondary active" href="{% url 'plan_update' plan.id %}">edit</a>
+        <a class="btn btn-secondary active" href="{% url 'plan_delete' plan.id %}">delete</a>
+    </div>
+
+    <h4 class="m-2"> Plan Muscle Summary</h4>
     {% if plan %}
-        <div class="card" style="width: 18rem;">
-            <div class="card-header">
-                {{ plan.name }}
-            </div>
-            <ul class="list-group list-group-flush">
-                {% for workout in workouts %}
-                    <li class="list-group-item"><a href="{% url 'workout_detail' workout.id %}">{{ workout.name }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="row p-3">
-            <span class=" btn badge badge-info">Publish Date: {{ plan.pub_date }}</span>
-        </div>
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <a class="btn btn-secondary active" href="{% url 'plan_update' plan.id %}">edit</a>
-            <a class="btn btn-secondary active" href="{% url 'plan_delete' plan.id %}">delete</a>
+        <table class="table col-6">
+            <thead>
+            <tr>
+                <th scope="col">Muscle</th>
+                <th scope="col">Primary</th>
+                <th scope="col">Secondary
+                <th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for key in muscle_summary %}
+                <tr>
+                    <th scope="row">{{ key.0 }}</th>
+                    <td>{{ key.1 }}</td>
+                    <td>{{ key.2 }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <h4 class="m-2"> Plan Overview</h4>
+
+        <div class="accordion col-4" id="accordionExample">
+            {% for workout in workouts %}
+                <div class="card ">
+                    <div class="card-header" id="h{{ workout.id }}">
+                        <h3 class="mb-0">
+                            <button class="btn btn-link " type="button" data-toggle="collapse"
+                                    data-target="#c{{ workout.id }}"
+                                    aria-expanded="true" aria-controls="c{{ workout.id }}">
+                                {{ workout.name }}
+                                <span class="badge badge-pill badge-success">{{ workout.number }}</span>
+                            </button>
+                        </h3>
+                    </div>
+
+                    <div id="c{{ workout.id }}" class="collapse hide" aria-labelledby="h{{ workout.id }}"
+                         data-parent="#accordionExample">
+                        <div class="card-body">
+                            {% for exercise in workout.exercise_list.all %}
+                                <li>{{ exercise.name }}</li>
+                            {% endfor %}
+                            <div class="btn btn-primary m-1 row">
+                                <a href="{% url 'workout_detail' workout.id %} " class="text-white">Go to workout</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+
         </div>
 
     {% else %}
-        <p>No Plans are available.</p>
+        <p>Cannot find the plan.</p>
     {% endif %}
 
 {% endblock %}

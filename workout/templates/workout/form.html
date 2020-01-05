@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% block content %}
     {{ form.media }}
@@ -27,10 +26,10 @@
                         <div class="col-3">
                             {{ exform.muscle|as_crispy_field }}
                         </div>
-                         <div class="col-3">
-                            {{ exform.exercise|as_crispy_field}}
+                        <div class="col-3">
+                            {{ exform.exercise|as_crispy_field }}
                         </div>
-                            <div class="col-2">
+                        <div class="col-2">
                             {{ exform.number|as_crispy_field }}
                         </div>
                         <div class="col-1">
@@ -50,27 +49,27 @@
         })
     </script>
 
-<script>
-    $(".muscle_select").change(function () {
-        var url = $("#WorkoutForm").attr("data-exercise-url");  // get the url of the `load_cities` view
-        var muscleId = $(this).val(); // get the selected country ID from the HTML input
-        var element_id = $(this).attr("id");
-        element_id = element_id.substring(
-            element_id.indexOf("-") + 1,
-            element_id.lastIndexOf("-")
-        );
-        var exercise_id = "#id_workoutmembership_set-" + element_id + "-exercise"
-        $.ajax({                       // initialize an AJAX request
-            url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
-            data: {
-                'muscle': muscleId       // add the country id to the GET parameters
-            },
-            success: function (data) {   // `data` is the return of the `load_cities` view function
-                $(exercise_id).html(data);  // replace the contents of the city input with the data that came from the server
-            }
-        });
+    <script>
+        $(".muscle_select").change(function () {
+            var url = $("#WorkoutForm").attr("data-exercise-url");  // get the url of the `load_cities` view
+            var muscleId = $(this).val(); // get the selected country ID from the HTML input
+            var element_id = $(this).attr("id");
+            element_id = element_id.substring(
+                element_id.indexOf("-") + 1,
+                element_id.lastIndexOf("-")
+            );
+            var exercise_id = "#id_workoutmembership_set-" + element_id + "-exercise"
+            $.ajax({                       // initialize an AJAX request
+                url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+                data: {
+                    'muscle': muscleId       // add the country id to the GET parameters
+                },
+                success: function (data) {   // `data` is the return of the `load_cities` view function
+                    $(exercise_id).html(data);  // replace the contents of the city input with the data that came from the server
+                }
+            });
 
-    });
-</script>
+        });
+    </script>
 
 {% endblock %}

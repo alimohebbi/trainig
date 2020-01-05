@@ -11,6 +11,8 @@ class Plan(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('-pub_date','name')
 
 class PlanMembership(models.Model):
     workout = models.ForeignKey(Workout, on_delete=models.CASCADE)

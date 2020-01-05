@@ -6,6 +6,6 @@
     <form method="post">
         {% csrf_token %}
         Are you sure you want to delete "{{ workout.name }}" workout?
-        <input type="submit" value="Submit"/>
+        <input type="submit" value="Submit" class="btn btn-danger"/>
     </form>
 {% endblock %}

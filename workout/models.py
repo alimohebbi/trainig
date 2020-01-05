@@ -12,6 +12,9 @@ class Workout(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ('-pub_date', 'name')
+
 
 class WorkoutMembership(models.Model):
     exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE)

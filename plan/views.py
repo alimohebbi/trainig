@@ -17,8 +17,32 @@ class PlanListView(generic.ListView):
     context_object_name = 'plans'
 
     def get_queryset(self):
-        """Return the last five published questions."""
-        return Plan.objects.order_by('-pub_date')
+        return Plan.objects.all()
+
+
+def count_muscle_exercise(workouts):
+    primary = {}
+    secondary = {}
+    keys = []
+    for w in workouts:
+        for e in w.exercise_list.all():
+            if e.primary_muscle not in primary.keys():
+                primary[e.primary_muscle] = 0
+            if e.secondary_muscle not in secondary.keys():
+                secondary[e.secondary_muscle] = 0
+
+            primary[e.primary_muscle] = primary[e.primary_muscle] + 1
+            if e.secondary_muscle is not None:
+                secondary[e.secondary_muscle] = secondary[e.secondary_muscle] + 1
+    for k in primary.keys():
+        if k not in secondary.keys():
+            secondary[k] = 0
+    for k in secondary.keys():
+        if k not in primary.keys() and k is not None:
+            primary[k] = 0
+    results = [[k, primary[k], secondary[k]] for k in primary.keys()]
+
+    return results
 
 
 class PlanView(generic.DetailView):
@@ -31,7 +55,9 @@ class PlanView(generic.DetailView):
             .order_by('number') \
             .values_list('workout', flat=True)
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(workout_ids)])
-        context['workouts'] = Workout.objects.filter(id__in=workout_ids).order_by(preserved).values()
+        workouts = Workout.objects.filter(id__in=workout_ids).order_by(preserved)
+        context['workouts'] = workouts
+        context['muscle_summary'] = count_muscle_exercise(workouts)
         return context
 
 
@@ -96,19 +122,6 @@ class PlanUpdate(UpdateView, PlanCreate):
         ingredient_form_class = self.get_inline_form()
         ingredient_form = ingredient_form_class(self.request.POST, instance=self.object)
         return self.evaluate_forms(ingredient_form)
-#
-# class PlanCreate(CreateView):
-#     model = Plan
-#     template_name = 'plan/form.html'
-#     fields = '__all__'
-#     success_url = reverse_lazy('plan_list')
-#
-#
-# class PlanUpdate(UpdateView):
-#     model = Plan
-#     template_name = 'plan/form.html'
-#     fields = '__all__'
-#     success_url = reverse_lazy('plan_list')
 
 
 class PlanDelete(DeleteView):
@@ -122,4 +135,3 @@ def load_workouts(request):
     search = request.GET.get('search')
     workouts = Workout.objects.filter(name__contains=search).order_by('name')
     return render(request, 'exercise_dropdown_list_options.html', {'elements': workouts})
-

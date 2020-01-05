@@ -17,7 +17,7 @@ class WorkoutListView(generic.ListView):
     context_object_name = 'workouts'
 
     def get_queryset(self):
-        return Workout.objects.order_by('-pub_date')
+        return Workout.objects.all()
 
 
 class WorkoutView(generic.DetailView):

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block content %}
+    {% load crispy_forms_tags %}
+
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Filter</span>
+        </div>
+        <input type="text" class="form-control col-4" placeholder="Exercise Keyword" aria-label="Exercise Keyword"
+               aria-describedby="basic-addon1">
+    </div>
+
+    <table class="table ">
+        <thead>
+        <tr>
+            <div class="row">
+                <div class="col-1">
+                    <th scope="col"></th>
+                </div>
+                {% for date in dates %}
+                    <div class=" col-1">
+                        <th class="small " scope="col"
+                            data-col="{{ forloop.counter }}">{{ date }}</th>
+
+                    </div>
+                {% endfor %}
+                <div class="col-1">
+                    <th scope="col" contenteditable data-col="last" class="last small">YYYY-MM-DD</th>
+                </div>
+            </div>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in exercises %}
+            <tr class="small">
+                <th class="exercise" scope="row">{{ e.name }}</th>
+                {% for date in dates %}
+                    <td contenteditable data-col="{{ forloop.counter }}" data-exercise="{{ e.id }}"
+                        data-date="{{ date|date:"Y-m-d" }}"></td>
+                {% endfor %}
+                <td contenteditable data-col="last" data-exercise="{{ e.id }}" data-date=""></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": '{{csrf_token}}'},
+        });
+
+        let send_record = function (record_data) {
+            console.log(record_data);
+            $.post('{% url 'record_create' %}', record_data, function () {
+            });
+        };
+    </script>
+
+
+
+    <script type="text/javascript">
+
+
+        $(document).ready(
+            function () {
+                $(".last[scope='col']").blur(function () {
+                    const col = $(this).attr("data-col");
+                    const date = $(this).text();
+                    $("td[data-col=" + col + "]").attr("data-date", date);
+                });
+            });
+
+        $(document).ready(
+            function () {
+                $("td").blur(function () {
+                    const date = $(this).attr("data-date");
+                    const exercise = $(this).attr("data-exercise");
+                    const record = $(this).text();
+                    if (record==='' || date ==='')
+                        return;
+                    var record_data = { date: date, exercise: exercise, record: record}
+                    send_record(record_data);
+                });
+            });
+    </script>
+
+    <script>
+        function cell_filler(item, index, arr) {
+            exercise = item['exercise_id'];
+            date = item['pub_date'];
+            $('[data-date=' + date + '][data-exercise=' + exercise + ']').text(item['value']);
+        }
+
+        $(document).ready(
+            function () {
+                $.get("{% url 'retrieve_records' %}", function (data, status) {
+                    data.forEach(cell_filler)
+                });
+            }
+        );
+    </script>
+
+    <script>
+        jQuery.expr[':'].icontains = function (a, i, m) {
+            return jQuery(a).text().toUpperCase()
+                .indexOf(m[3].toUpperCase()) >= 0;
+        };
+
+        $("input").keyup(function () {
+            key = $(this).val()
+            $("tr").show()
+            $("th.exercise:not(:icontains('" + key + "'))").parent().hide();
+        });
+    </script>
+
+
+{% endblock %}
+

@@ -16,21 +16,5 @@ class Exercise(models.Model):
     def __str__(self):
         return self.name
 
-#
-# class Workout(models.Model):
-#     number = models.IntegerField()
-#     name = models.CharField(max_length=100)
-#     exercise_list = models.ManyToManyField(Exercise)
-#     pub_date = models.DateField('date published')
-#
-#     def __str__(self):
-#         return self.name
-#
-#
-# class Plan(models.Model):
-#     name = models.CharField(max_length=100)
-#     pub_date = models.DateField('date published')
-#     workout_list = models.ManyToManyField(Workout)
-#
-#     def __str__(self):
-#         return self.name
+    class Meta:
+        ordering = ['primary_muscle', 'name']

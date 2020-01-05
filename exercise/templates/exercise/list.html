@@ -10,18 +10,36 @@
     </div>
     {% if exercises %}
         <ul>
-            <div class="row">
-                {% for m in exercises %}
-                    <div class="card m-2 col-3" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ m.name }}</h5>
-                            <p class="card-text">Publish Date: {{ m.pub_date }}</p>
-                            <a href="{% url 'exercise_detail' m.id %}" class="card-link">Detail</a>
-                        </div>
-                    </div>
 
-                {% endfor %}
-            </div>
+            {% regroup exercises by primary_muscle as exercises_by_muscle %}
+            {% for ex_muscle in exercises_by_muscle %}
+                <hr>
+                <div class="row m-2">
+                    <div class="col-8">
+                        <h3 class="m-0">{{ ex_muscle.grouper }}  </h3>
+                        <span class="badge badge-danger m-0">{{ ex_muscle.list|length }}</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    {% for m in ex_muscle.list %}
+
+                        <div class="card m-2 col-2 p-0" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ m.name }}</h5>
+                                <p class="card-text m-0">P Muscle: <span class="text-info">{{ m.primary_muscle }}</span>
+                                </p>
+                                <p class="card-text">S Muscle: <span class="text-info">{{ m.secondary_muscle }}</span>
+                                </p>
+                                <a href="{% url 'exercise_detail' m.id %}"
+                                   class="card-link btn btn btn-outline-primary ">Detail</a>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
         </ul>
 
     {% else %}
