@@ -29,11 +29,20 @@ def retrieve_records(request):
 
 def post(request):
     value = request.POST.get('record')
-    muscle = request.POST.get('exercise')
+    exercise_id = request.POST.get('exercise')
     date = request.POST.get('date')
-    record = Record(muscle, value, date)
-    record.save()
-    print(record)
+    record_id = request.POST.get('record_id')
+    if record_id == '':
+        record_id = None
+    exercise = Exercise.objects.get(pk=exercise_id)
+    Record.objects.update_or_create(pk=record_id, defaults={'pub_date': date, 'exercise': exercise, 'value': value})
+    # try:
+    #     record = Record.objects.get(pk=int(record_id))
+    #     record.value = value
+    # except Exception:
+    #     record = Record(exercise, value, date)
+    # record.save()
+
     return HttpResponse('success')
 
 

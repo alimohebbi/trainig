@@ -36,7 +36,7 @@
                 <th class="exercise" scope="row">{{ e.name }}</th>
                 {% for date in dates %}
                     <td contenteditable data-col="{{ forloop.counter }}" data-exercise="{{ e.id }}"
-                        data-date="{{ date|date:"Y-m-d" }}"></td>
+                        data-date="{{ date|date:"Y-m-d" }}" data-record-id=""></td>
                 {% endfor %}
                 <td contenteditable data-col="last" data-exercise="{{ e.id }}" data-date=""></td>
             </tr>
@@ -75,10 +75,11 @@
                 $("td").blur(function () {
                     const date = $(this).attr("data-date");
                     const exercise = $(this).attr("data-exercise");
+                    const record_id = $(this).attr("data-record-id");
                     const record = $(this).text();
                     if (record==='' || date ==='')
                         return;
-                    var record_data = { date: date, exercise: exercise, record: record}
+                    var record_data = { date: date, exercise: exercise, record: record, record_id : record_id}
                     send_record(record_data);
                 });
             });
@@ -86,9 +87,11 @@
 
     <script>
         function cell_filler(item, index, arr) {
+            console.log(item)
             exercise = item['exercise_id'];
             date = item['pub_date'];
             $('[data-date=' + date + '][data-exercise=' + exercise + ']').text(item['value']);
+            $('[data-date=' + date + '][data-exercise=' + exercise + ']').attr('data-record-id', item['id'])
         }
 
         $(document).ready(
