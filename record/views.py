@@ -15,14 +15,14 @@ class RecordListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(RecordListView, self).get_context_data(**kwargs)
-        records = Record.objects.all().order_by('-pub_date')[:10]
+        records = Record.objects.all().order_by('-pub_date')[:160]
         context['dates'] = sorted(set(records.values_list('pub_date', flat=True)))
         context['exercises'] = Exercise.objects.all()
         return context
 
 
 def retrieve_records(request):
-    query = Record.objects.all()[:10]
+    query = Record.objects.all()[:160]
     records = json.dumps(list(query.values()), sort_keys=True, default=str)
     return HttpResponse(records, content_type="application/json")
 
@@ -36,13 +36,6 @@ def post(request):
         record_id = None
     exercise = Exercise.objects.get(pk=exercise_id)
     Record.objects.update_or_create(pk=record_id, defaults={'pub_date': date, 'exercise': exercise, 'value': value})
-    # try:
-    #     record = Record.objects.get(pk=int(record_id))
-    #     record.value = value
-    # except Exception:
-    #     record = Record(exercise, value, date)
-    # record.save()
-
     return HttpResponse('success')
 
 
