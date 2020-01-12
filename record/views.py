@@ -42,6 +42,15 @@ def post(request):
     return HttpResponse('success')
 
 
+def getLatest(request):
+    exercise = request.POST.get('exercise')
+    val = Record.objects.filter(exercise__pk=exercise).order_by('-pub_date',  '-pk')[:1].values()
+    record = 0
+    if val.count() != 0:
+        record = val[0]['value']
+    return HttpResponse(record, content_type="application/json")
+
+
 def update(request, pk):
     value = request.POST.get('record')
     muscle = request.POST.get('muscle')

@@ -8,4 +8,5 @@ urlpatterns = [
     path('create/', views.post, name='record_create'),
     path('records/', views.retrieve_records, name='retrieve_records'),
     path('list/', views.RecordListView.as_view(), name='record_list'),
+    path('latest/', views.getLatest, name='get_latest'),
 ]

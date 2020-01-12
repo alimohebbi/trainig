@@ -3,16 +3,21 @@
 {% extends "base.html" %}
 {% block content %}
     {% if workout %}
-        <div class="card col col-md-6 p-0">
+        <div class="card col col-md-5 p-0">
             <div class="card-header">
                 {{ workout.name }}
             </div>
             <ul class="list-group list-group-flush ">
                 {% for exercise in exercises %}
-                    <li class="list-group-item ">
-                        <div class="row">
-                            <a class="col-5" href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a>
-                            <div class="input-group col-6 col-md-3">
+                    <li class="list-group-item    ">
+                        <div class="row ">
+                            <a class="col-md-7 col-6 align-self-center"
+                               href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a>
+                            <div class="col-2   align-self-center">
+                                <span class="last-record badge badge-pill badge-success" data-exercise="{{ exercise.id }}">0</span>
+                            </div>
+                            <div class="input-group col-4 col-md-3  pl-1">
+
                                 <input type="text" class="form-control" placeholder="#"
                                        aria-label="Recipient's username"
                                        aria-describedby="button-addon-{{ exercise.id }}"
@@ -42,7 +47,7 @@
     {% else %}
         <p>No Plans are available.</p>
     {% endif %}
-        <script>
+    <script>
         $.ajaxSetup({
             headers: {"X-CSRFToken": '{{csrf_token}}'},
         });
@@ -54,22 +59,25 @@
         };
     </script>
     <script>
-
-
         $(document).ready(
             function () {
                 $("button").click(function () {
-                    console.log('here');
-
                     const exercise = $(this).attr('data-exercise');
                     const record = $("input[data-exercise=" + exercise + "]").val();
                     if (record === '')
                         return;
                     var record_data = {date: '', exercise: exercise, record: record};
-
                     send_record(record_data);
                 });
+
+                $(".last-record").each(function () {
+                    console.log("hi");
+                    const exercise = $(this).attr("data-exercise");
+                    $(this).load("{% url "get_latest" %}", {exercise: exercise}, function (response) {
+                        $(this).text(response);
+                    });
+                });
+
             });
     </script>
-
 {% endblock %}
