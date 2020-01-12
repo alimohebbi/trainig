@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.http import HttpResponse
 # Create your views here.
@@ -32,6 +33,8 @@ def post(request):
     exercise_id = request.POST.get('exercise')
     date = request.POST.get('date')
     record_id = request.POST.get('record_id')
+    if date == '':
+        date = datetime.today().strftime('%Y-%m-%d')
     if record_id == '':
         record_id = None
     exercise = Exercise.objects.get(pk=exercise_id)

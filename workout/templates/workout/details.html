@@ -3,13 +3,29 @@
 {% extends "base.html" %}
 {% block content %}
     {% if workout %}
-        <div class="card" style="width: 18rem;">
+        <div class="card col col-md-6 p-0">
             <div class="card-header">
                 {{ workout.name }}
             </div>
-            <ul class="list-group list-group-flush">
-                {% for exercise in exercises  %}
-                    <li class="list-group-item"><a href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a></li>
+            <ul class="list-group list-group-flush ">
+                {% for exercise in exercises %}
+                    <li class="list-group-item ">
+                        <div class="row">
+                            <a class="col-5" href="{% url 'exercise_detail' exercise.id %}">{{ exercise.name }}</a>
+                            <div class="input-group col-6 col-md-3">
+                                <input type="text" class="form-control" placeholder="#"
+                                       aria-label="Recipient's username"
+                                       aria-describedby="button-addon-{{ exercise.id }}"
+                                       data-exercise="{{ exercise.id }}">
+                                <div class="input-group-append ">
+                                    <button class="btn btn-outline-secondary" type="button"
+                                            id="button-addon-{{ exercise.id }}" data-exercise="{{ exercise.id }}">
+                                        <i class=" fa fas fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
                 {% endfor %}
 
             </ul>
@@ -26,5 +42,34 @@
     {% else %}
         <p>No Plans are available.</p>
     {% endif %}
+        <script>
+        $.ajaxSetup({
+            headers: {"X-CSRFToken": '{{csrf_token}}'},
+        });
+
+        let send_record = function (record_data) {
+            console.log(record_data);
+            $.post('{% url 'record_create' %}', record_data, function () {
+            });
+        };
+    </script>
+    <script>
+
+
+        $(document).ready(
+            function () {
+                $("button").click(function () {
+                    console.log('here');
+
+                    const exercise = $(this).attr('data-exercise');
+                    const record = $("input[data-exercise=" + exercise + "]").val();
+                    if (record === '')
+                        return;
+                    var record_data = {date: '', exercise: exercise, record: record};
+
+                    send_record(record_data);
+                });
+            });
+    </script>
 
 {% endblock %}
